@@ -19,7 +19,7 @@ class DB:
     def __init__(self, dataset_type, table_type=""):
         self.dataset_type = dataset_type
         self.table_type = table_type
-        self.table_name = dataset_type
+        self.table_name = "qmsum_"+dataset_type
 
         if table_type == "augmented":
             self.table_name += "_gpt_augmented"
@@ -100,6 +100,18 @@ class DB:
 
         return target_sentence_id
 
+    def insert_train_test_record(self, segment_id, type):
+        sql = f""" INSERT INTO {self.table_name}_train_test(segment_id,type)
+                VALUES(?,?) """
+
+        cur = self.conn.cursor()
+        # insert the target segment
+        cur.execute(sql, (segment_id, type))
+        self.conn.commit()
+        target_sentence_id = cur.lastrowid
+
+        return target_sentence_id
+
     def get_segment(self, segment_id, max_segment_size=1000):
         sql = f""" SELECT * FROM {self.table_name}
                 WHERE id=? OR parent=? ORDER BY sequence ASC LIMIT ?"""
@@ -112,7 +124,7 @@ class DB:
         return rows
 
     def get_target_sentences(self):
-        sql = f""" SELECT * FROM {self.dataset_type}
+        sql = f""" SELECT * FROM {self.table_name}
                 WHERE target=?"""
 
         cur = self.conn.cursor()
@@ -123,7 +135,8 @@ class DB:
         return rows
 
     def get_target_sentence_ids(self, split="test"):
-        sql = f"""SELECT * FROM {self.table_name} WHERE type=? ORDER BY RANDOM()"""
+        train_test_table_name = "qmsum_"+self.dataset_type+"_train_test"
+        sql = f"""SELECT * FROM {train_test_table_name} WHERE type=? ORDER BY RANDOM()"""
 
         cur = self.conn.cursor()
         cur.execute(sql, (split,))
@@ -135,6 +148,7 @@ class DB:
     def get_random_target_sentences(self, num_sentences, split="test"):
         target_sentence_ids = self.get_target_sentence_ids(split)[
             :num_sentences]
+        print("target sentence ids", target_sentence_ids)
         sql = f"""SELECT * FROM {self.table_name} WHERE id=?"""
 
         rows = []
@@ -158,9 +172,8 @@ class DB:
     ):
         target_sentences = self.get_random_target_sentences(
             num_segments, split)
-
+        print(target_sentences)
         segments = []
-        print("artificial segments", artificial_segments)
         for sentence in target_sentences:
             if not artificial_segments:
                 segments.append(self.get_segment(
@@ -278,6 +291,7 @@ class AugmentedTable(DB):
 class TrainTestTable(DB):
     def __init__(self, dataset_type):
         super().__init__(dataset_type, 'train_test')
+        self.dataset_type = dataset_type
 
     def migrate_table(self):
         sql_create_train_test_table = f""" CREATE TABLE IF NOT EXISTS {self.dataset_type}_train_test (
@@ -292,13 +306,16 @@ class TrainTestTable(DB):
             self.create_table(sql_create_train_test_table)
 
     def create_train_test_split(self) -> None:
-        sql_delete = f"""DELETE from {self.dataset_type}_train_test"""
+        sql_delete = f"""DELETE from {self.table_name}"""
 
         cur = self.conn.cursor()
         cur.execute(sql_delete)
 
-        target_sentences = self.get_target_sentences()
+        table = Table(self.dataset_type)
+
+        target_sentences = table.get_target_sentences()
         ids = [s[0] for s in target_sentences]
+        print(ids)
 
         split = int(TRAIN_TEST_SPLIT * len(ids))
 
@@ -306,7 +323,7 @@ class TrainTestTable(DB):
         train = [(x, "train") for x in ids[:split]]
         test = [(x, "test") for x in ids[split:]]
 
-        sql = f""" INSERT INTO {self.dataset_type}_train_test(segment_id,type)
+        sql = f""" INSERT INTO {self.table_name}(segment_id,type)
                 VALUES(?,?) """
 
         cur.executemany(sql, train)

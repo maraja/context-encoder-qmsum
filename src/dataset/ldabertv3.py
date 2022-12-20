@@ -3,6 +3,7 @@
 from transformers import AutoTokenizer, TFAutoModel, AutoModel
 from cached_property import cached_property
 from db.db import DB, AugmentedDB
+from db.dbv2 import Table, AugmentedTable, TrainTestTable
 from src.dataset.LDA_BERT.LDA_BERT import LDA
 import tensorflow as tf
 import numpy as np
@@ -34,7 +35,7 @@ class LDABERT3Dataset(DatasetParams):
         *,
         dataset_slice="training",
         dataset_type="default",
-        pct_data=0.005,
+        pct_data=1,
         max_seq_length=256,
         random=False,
         augment_pct=0.0,
@@ -47,8 +48,10 @@ class LDABERT3Dataset(DatasetParams):
     ):
         self.topics = lda_topics
         self.lda_gamma = lda_gamma
-        self.db = DB(dataset_type)
-        self.augmented_db = AugmentedDB(dataset_type)
+
+        self.db_table = Table(dataset_type)
+        self.db_augmented_table = AugmentedTable(dataset_type)
+
         self.split = split
         self.artificial_segments = artificial_segments
         super().__init__(
@@ -65,22 +68,24 @@ class LDABERT3Dataset(DatasetParams):
     @cached_property
     def data_segments(self):
         if self.split == "train":
-            regular_segments = self.db.get_random_segments_pct(
+            regular_segments = self.db_table.get_random_segments_pct(
                 pct_data=self.pct_data,
                 split=self.split,
                 max_segment_size=self.max_segment_length,
                 artificial_segments=self.artificial_segments,
             )
-            augmented_segments = self.augmented_db.get_random_segments_pct(
-                pct_data=self.augment_pct,
-                max_segment_size=self.max_segment_length,
-                artificial_segments=self.artificial_segments,
-            )
+            # # No augmented segments for now
+            # augmented_segments = self.db_augmented_table.get_random_segments_pct(
+            #     pct_data=self.augment_pct,
+            #     max_segment_size=self.max_segment_length,
+            #     artificial_segments=self.artificial_segments,
+            # )
 
-            return regular_segments + augmented_segments
+            # return regular_segments + augmented_segments
+            return regular_segments
 
         # testing doesn't need augmented data
-        return self.db.get_random_segments_pct(
+        return self.db_table.get_random_segments_pct(
             pct_data=self.pct_data,
             split=self.split,
             max_segment_size=self.max_segment_length,

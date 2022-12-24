@@ -210,6 +210,9 @@ class LDABERT3Dataset(DatasetParams):
 
     def generate_vectors(self):
         self.lda = LDA(self.lda_sentences, self.topics, self.lda_token_lists)
+        # print("LDA")
+        # print(self.lda_sentences[:-5], self.topics,
+        #       self.lda_token_lists[:-5])
         self.lda_vectors = self.lda.vectorize(method="LDA")
         return self.lda_vectors
 

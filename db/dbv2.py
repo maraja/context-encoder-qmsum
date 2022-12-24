@@ -26,7 +26,7 @@ class DB:
         elif table_type == "train_test":
             self.table_name += "_train_test"
 
-        self.db_file = os.path.join(".", f"{dataset_type}.db")
+        self.db_file = os.path.join(dname, f"{dataset_type}.db")
 
         self.migrate_table()
 
@@ -41,7 +41,7 @@ class DB:
         try:
             conn = sqlite3.connect(self.db_file)
         except Error as e:
-            print(e)
+            print(e, self.db_file)
 
         return conn
 
@@ -148,7 +148,6 @@ class DB:
     def get_random_target_sentences(self, num_sentences, split="test"):
         target_sentence_ids = self.get_target_sentence_ids(split)[
             :num_sentences]
-        print("target sentence ids", target_sentence_ids)
         sql = f"""SELECT * FROM {self.table_name} WHERE id=?"""
 
         rows = []
@@ -172,7 +171,6 @@ class DB:
     ):
         target_sentences = self.get_random_target_sentences(
             num_segments, split)
-        print(target_sentences)
         segments = []
         for sentence in target_sentences:
             if not artificial_segments:
@@ -315,7 +313,6 @@ class TrainTestTable(DB):
 
         target_sentences = table.get_target_sentences()
         ids = [s[0] for s in target_sentences]
-        print(ids)
 
         split = int(TRAIN_TEST_SPLIT * len(ids))
 

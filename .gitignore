@@ -145,9 +145,10 @@ dmypy.json
 
 raw_data/*
 models/*
+data/*
 logs/*
 !data/.gitkeep
 !models/.gitkeep
 !logs/.gitkeep
 weights_*
-db/*.db
+# db/*.db

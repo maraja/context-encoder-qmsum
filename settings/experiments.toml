@@ -1,0 +1,298 @@
+# LEGEND:
+## simple = 64 dense neurons + concatenated layer + dropout
+## complex = LSTM + Attention + concatenated layer + dropout
+## LDA + BERT Simple = combining LDA and S BERT and  finetuning the simple downstream layers to classify
+
+# ALBERT finetune simple
+[[ALBERT_FINETUNE_SIMPLE]]
+bert_type = "albert"
+dataset_type = "clinical"
+finetune_bert = true
+pct_data = 1
+augment_pct = 0.1
+epochs = 200
+
+[[ALBERT_FINETUNE_SIMPLE]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "clinical"
+pct_data = 1
+augment_pct = 0.5
+epochs = 200
+
+[[ALBERT_FINETUNE_SIMPLE]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "clinical"
+pct_data = 1
+augment_pct = 1
+epochs = 200
+
+[[ALBERT_FINETUNE_SIMPLE]]
+bert_type = "albert"
+dataset_type = "fiction"
+finetune_bert = true
+pct_data = 1
+augment_pct = 0.1
+epochs = 200
+
+[[ALBERT_FINETUNE_SIMPLE]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "fiction"
+pct_data = 1
+augment_pct = 0.5
+epochs = 200
+
+[[ALBERT_FINETUNE_SIMPLE]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "fiction"
+pct_data = 1
+augment_pct = 1
+epochs = 200
+
+[[ALBERT_FINETUNE_SIMPLE]]
+bert_type = "albert"
+dataset_type = "wiki"
+finetune_bert = true
+pct_data = 1
+augment_pct = 0.1
+epochs = 200
+
+[[ALBERT_FINETUNE_SIMPLE]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "wiki"
+pct_data = 1
+augment_pct = 0.5
+epochs = 200
+
+[[ALBERT_FINETUNE_SIMPLE]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "wiki"
+pct_data = 1
+augment_pct = 1
+epochs = 200
+
+# albert finetime complex
+[ALBERT_FINETUNE_COMPLEX]
+foo = "bar"
+
+# lda bert finetune simple
+[LDA_BERT_FINETUNE_SIMPLE]
+foo = "bar"
+
+# albert finetune simple test
+[[ALBERT_FINETUNE_TEST]]
+bert_type = "albert"
+dataset_type = "clinical"
+finetune_bert = true
+pct_data = 1
+augment_pct = 0.1
+epochs = 100
+
+[[ALBERT_FINETUNE_TEST]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "clinical"
+pct_data = 1
+augment_pct = 0.5
+epochs = 100
+
+[[ALBERT_FINETUNE_TEST]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "clinical"
+pct_data = 1
+augment_pct = 1
+epochs = 100
+
+[[ALBERT_FINETUNE_TEST]]
+bert_type = "albert"
+dataset_type = "fiction"
+finetune_bert = true
+pct_data = 1
+augment_pct = 0.1
+epochs = 100
+
+[[ALBERT_FINETUNE_TEST]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "fiction"
+pct_data = 1
+augment_pct = 0.5
+epochs = 100
+
+[[ALBERT_FINETUNE_TEST]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "fiction"
+pct_data = 1
+augment_pct = 1
+epochs = 100
+
+[[ALBERT_FINETUNE_TEST]]
+bert_type = "albert"
+dataset_type = "wiki"
+finetune_bert = true
+pct_data = 1
+augment_pct = 0.1
+epochs = 100
+
+[[ALBERT_FINETUNE_TEST]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "wiki"
+pct_data = 1
+augment_pct = 0.5
+epochs = 100
+
+[[ALBERT_FINETUNE_TEST]]
+bert_type = "albert"
+finetune_bert = true
+dataset_type = "wiki"
+pct_data = 1
+augment_pct = 1
+epochs = 100
+
+
+
+# distilbert finetune simple test
+[[DISTILBERT_FINETUNE_TEST]]
+bert_type = "distilbert"
+dataset_type = "clinical"
+finetune_bert = true
+pct_data = 1
+augment_pct = 0.1
+epochs = 100
+
+[[DISTILBERT_FINETUNE_TEST]]
+bert_type = "distilbert"
+finetune_bert = true
+dataset_type = "clinical"
+pct_data = 1
+augment_pct = 0.5
+epochs = 100
+
+[[DISTILBERT_FINETUNE_TEST]]
+bert_type = "distilbert"
+finetune_bert = true
+dataset_type = "clinical"
+pct_data = 1
+augment_pct = 1
+epochs = 100
+
+[[DISTILBERT_FINETUNE_TEST]]
+bert_type = "distilbert"
+dataset_type = "fiction"
+finetune_bert = true
+pct_data = 1
+augment_pct = 0.1
+epochs = 100
+
+[[DISTILBERT_FINETUNE_TEST]]
+bert_type = "distilbert"
+finetune_bert = true
+dataset_type = "fiction"
+pct_data = 1
+augment_pct = 0.5
+epochs = 100
+
+[[DISTILBERT_FINETUNE_TEST]]
+bert_type = "distilbert"
+finetune_bert = true
+dataset_type = "fiction"
+pct_data = 1
+augment_pct = 1
+epochs = 100
+
+[[DISTILBERT_FINETUNE_TEST]]
+bert_type = "distilbert"
+dataset_type = "wiki"
+finetune_bert = true
+pct_data = 1
+augment_pct = 0.1
+epochs = 100
+
+[[DISTILBERT_FINETUNE_TEST]]
+bert_type = "distilbert"
+finetune_bert = true
+dataset_type = "wiki"
+pct_data = 1
+augment_pct = 0.5
+epochs = 100
+
+[[DISTILBERT_FINETUNE_TEST]]
+bert_type = "distilbert"
+finetune_bert = true
+dataset_type = "wiki"
+pct_data = 1
+augment_pct = 1
+epochs = 100
+
+
+# ldabert simple test
+[[LDABERT_SIMPLE_TEST]]
+bert_type = "ldabert"
+dataset_type = "clinical"
+pct_data = 1
+augment_pct = 0.1
+epochs = 1000
+
+[[LDABERT_SIMPLE_TEST]]
+bert_type = "ldabert"
+dataset_type = "clinical"
+pct_data = 1
+augment_pct = 0.5
+epochs = 1000
+
+[[LDABERT_SIMPLE_TEST]]
+bert_type = "ldabert"
+dataset_type = "clinical"
+pct_data = 1
+augment_pct = 1
+epochs = 1000
+
+[[LDABERT_SIMPLE_TEST]]
+bert_type = "ldabert"
+dataset_type = "fiction"
+pct_data = 1
+augment_pct = 0.1
+epochs = 1000
+
+[[LDABERT_SIMPLE_TEST]]
+bert_type = "ldabert"
+dataset_type = "fiction"
+pct_data = 1
+augment_pct = 0.5
+epochs = 1000
+
+[[LDABERT_SIMPLE_TEST]]
+bert_type = "ldabert"
+dataset_type = "fiction"
+pct_data = 1
+augment_pct = 1
+epochs = 1000
+
+[[LDABERT_SIMPLE_TEST]]
+bert_type = "ldabert"
+dataset_type = "wiki"
+pct_data = 1
+augment_pct = 0.1
+epochs = 1000
+
+[[LDABERT_SIMPLE_TEST]]
+bert_type = "ldabert"
+dataset_type = "wiki"
+pct_data = 1
+augment_pct = 0.5
+epochs = 1000
+
+[[LDABERT_SIMPLE_TEST]]
+bert_type = "ldabert"
+dataset_type = "wiki"
+pct_data = 1
+augment_pct = 1
+epochs = 1000

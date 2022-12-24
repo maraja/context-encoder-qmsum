@@ -1,3 +1,4 @@
+import argparse
 from .model import Topic_Model
 from .utils import *
 import pandas as pd
@@ -8,8 +9,6 @@ import math
 import warnings
 
 warnings.filterwarnings("ignore", category=Warning)
-
-import argparse
 
 
 class LDA_BERT:
@@ -24,13 +23,15 @@ class LDA_BERT:
         self.topics = topics
         self.pct_data = pct_data
         self.lda_gamma = lda_gamma
-        self.sentences = self.sentences[: math.floor(len(self.sentences) * pct_data)]
+        self.sentences = self.sentences[: math.floor(
+            len(self.sentences) * pct_data)]
         self.token_lists = token_lists
         self.model = None
 
     def _compile(self, method):
         # Define the topic model object
-        self.model = Topic_Model(k=self.topics, lda_gamma=self.lda_gamma, method=method)
+        self.model = Topic_Model(
+            k=self.topics, lda_gamma=self.lda_gamma, method=method)
         # # Fit the topic model by chosen method
         # self.model.fit(self.sentences, self.token_lists)
 
@@ -50,7 +51,8 @@ class LDA:
 
     def _compile(self, method):
         # Define the topic model object
-        self.model = Topic_Model(k=self.topics, lda_gamma=self.lda_gamma, method=method)
+        self.model = Topic_Model(
+            k=self.topics, lda_gamma=self.lda_gamma, method=method)
         # # Fit the topic model by chosen method
         # self.model.fit(self.sentences, self.token_lists)
 

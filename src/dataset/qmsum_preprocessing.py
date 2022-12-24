@@ -23,6 +23,10 @@ def clean_sentence(text):
     return text
 
 
+def remove_blank_sentence(arr_text):
+    return list(filter(lambda text: len(text) > 0, arr_text))
+
+
 def preprocess_text_segmentation(data):
     # shape: [["sentence 1", "sentence 2"], ["sentence3", "sentence4"]]
     text_segments = []
@@ -99,3 +103,18 @@ def format_data_for_db_insertion(data):
             id += 1
 
     return tuples
+
+# HELPERS
+
+
+def flatten_list(_2d_list):
+    flat_list = []
+    # Iterate through the outer list
+    for element in _2d_list:
+        if type(element) is list:
+            # If the element is of type list, iterate through the sublist
+            for item in element:
+                flat_list.append(item)
+        else:
+            flat_list.append(element)
+    return flat_list

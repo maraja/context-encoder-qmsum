@@ -1,11 +1,7 @@
 import tensorflow as tf
 from transformers import TFGPT2LMHeadModel, GPT2Tokenizer, GPT2TokenizerFast
 
-from nlpaug.util import Action
-
 from typing import List
-
-from cached_property import cached_property
 
 
 class Augmentor:
@@ -52,13 +48,14 @@ class Augmentor:
                 input_ids,
                 do_sample=True,
                 max_length=max_seq_word_length,
-                top_k=50,
-                top_p=0.95,
+                top_k=40,
+                top_p=0.7,
                 num_return_sequences=num_return_sequences,
             )
 
             generated_segments.append(
-                [tokenizer.decode(x, skip_special_tokens=True) for x in sample_outputs]
+                [tokenizer.decode(x, skip_special_tokens=True)
+                 for x in sample_outputs]
             )
 
             if verbose:

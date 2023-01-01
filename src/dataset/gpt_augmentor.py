@@ -49,7 +49,7 @@ class Augmentor:
                 do_sample=True,
                 max_length=max_seq_word_length,
                 top_k=40,
-                top_p=0.7,
+                temperature=0.7,
                 num_return_sequences=num_return_sequences,
             )
 

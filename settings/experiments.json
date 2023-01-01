@@ -44,7 +44,7 @@
     "pct_data": [1],
     "augment_pct": [1],
     "bert_trainable": [false],
-    "epochs": [10]
+    "epochs": [150]
   },
   "ldabert2_complex_test": {
     "bert_type": ["ldabert"],
@@ -158,5 +158,17 @@
     "augment_pct": [1],
     "bert_trainable": [true],
     "epochs": [200]
+  },
+  "ldabert2_simple_lib_test": {
+    "bert_type": ["ldabert"],
+    "dataset_type": ["committee", "product", "academic"],
+    "final_dropout": [0.5],
+    "dense_neurons": [128],
+    "max_sentence_length": [128],
+    "gamma": [15],
+    "pct_data": [0.05],
+    "augment_pct": [0],
+    "bert_trainable": [false],
+    "epochs": [2]
   }
 }

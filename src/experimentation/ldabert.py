@@ -1,4 +1,4 @@
-from utils.experiments import get_experiments_json, get_experiments, save_results
+from utils.experiments import get_experiments_json, get_experiments, save_results, print_break
 import numpy as np
 import pandas as pd
 import json
@@ -191,6 +191,8 @@ class SimpleExperiment:
                 df_evaluation_set.to_csv(evaluation_file, index=False)
         except IOError:
             print("I/O error")
+
+        print_break("EXPERIMENT COMPLETE")
 
     def predict(self, model, dataset_type: str, random_hash: str):
         print("Conducting predictions - initializing testing dataset...")

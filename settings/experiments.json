@@ -166,9 +166,9 @@
     "dense_neurons": [128],
     "max_sentence_length": [128],
     "gamma": [15],
-    "pct_data": [0.05],
+    "pct_data": [0.01],
     "augment_pct": [0],
     "bert_trainable": [false],
-    "epochs": [2]
+    "epochs": [1]
   }
 }

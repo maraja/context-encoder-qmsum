@@ -80,15 +80,9 @@ class SimpleExperiment:
             testing_saved_vectors, testing_saved_labels, testing_saved_sentences, testing_saved_tokenized_sentences = testing_dataset.create_vectors(
                 "test", testing_dataset.dataset_type, vectors_filename)
 
-        testing_left_input, testing_mid_input, testing_right_input = testing_dataset.format_sentences_tri_input_plus(
-            testing_saved_tokenized_sentences)
-        testing_lda_left_input, testing_lda_mid_input, testing_lda_right_input = testing_dataset.format_sentences_tri_input(
-            testing_saved_vectors)
-
         for i in range(0, testing_saved_vectors.shape[0]//slice_size):
             start = i*slice_size
             end = start + slice_size
-            print(start, end)
 
             sliced_tokenized_sentences = {
                 'input_ids': testing_saved_tokenized_sentences['input_ids'][start:end],
@@ -119,14 +113,14 @@ class SimpleExperiment:
 
             k = 14
 
-            string_predictions = "".join([str(i) for i in predictions])
-            string_ground_truth = "".join(
-                [str(i) for i in testing_saved_labels[start:end]])
-            print(string_predictions)
-            print(string_ground_truth)
-            overall_windowdiff = windowdiff(
-                string_predictions, string_ground_truth, k)
-            overall_pk = pk(string_predictions, string_ground_truth, k)
+            # # Calculate only if want to print out
+            # string_predictions = "".join([str(i) for i in predictions])
+            # string_ground_truth = "".join(
+            #     [str(i) for i in testing_saved_labels[start:end]])
+
+            # overall_windowdiff = windowdiff(
+            #     string_predictions, string_ground_truth, k)
+            # overall_pk = pk(string_predictions, string_ground_truth, k)
 
             for pred_idx, pred in enumerate(predictions):
                 log = {
@@ -138,9 +132,6 @@ class SimpleExperiment:
                     "prediction_threshold": pred_threshold,
                 }
                 predictions_log.append(log)
-                # print(log)
-
-            print("{},{},{},{}".format(overall_windowdiff, overall_pk, k, k))
 
         try:
             if not os.path.exists(os.path.dirname(log_file)):

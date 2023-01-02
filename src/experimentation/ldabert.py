@@ -20,6 +20,7 @@ import random
 import string
 
 from utils.metrics import windowdiff, pk
+from collections import OrderedDict
 
 sys.path.insert(0, config.root_path)
 
@@ -27,6 +28,40 @@ sys.path.insert(0, config.root_path)
 def get_random_hash(k):
     x = ''.join(random.choices(string.ascii_letters + string.digits, k=k))
     return x
+
+
+def perf_measure(y_actual, y_pred):
+    TP = 0
+    FP = 0
+    TN = 0
+    FN = 0
+
+    for i in range(len(y_pred)):
+        if y_actual[i] == y_pred[i] == 1:
+            TP += 1
+        if y_pred[i] == 1 and y_actual[i] != y_pred[i]:
+            FP += 1
+        if y_actual[i] == y_pred[i] == 0:
+            TN += 1
+        if y_pred[i] == 0 and y_actual[i] != y_pred[i]:
+            FN += 1
+    return (TP, FP, TN, FN)
+
+
+def get_precision(TP, FP, TN, FN):
+    if TP == 0:
+        return 0
+    if TP + FP == 0:
+        return 0
+    return TP / (TP + FP)
+
+
+def get_recall(TP, FP, TN, FN):
+    if TP == 0:
+        return 0
+    if TP + FP == 0:
+        return 0
+    return TP / (TP + FN)
 
 
 class SimpleExperiment:
@@ -50,6 +85,112 @@ class SimpleExperiment:
         self.msl = msl
         self.training_lda_gamma = training_lda_gamma
         self.predictions_lda_gamma = predictions_lda_gamma
+
+    def evaluate(self, random_hash):
+        print("running evaluations")
+        predictions_directory = "{}/predictions/{}".format(
+            config.root_path, random_hash)
+        predictions_path = "{}/predictions.csv".format(predictions_directory)
+
+        predictions = []
+        reader = csv.DictReader(open(predictions_path, encoding="utf8"))
+        for row in reader:
+            predictions.append(row)
+
+        if type(predictions[0]) is OrderedDict:
+            predictions = [dict(x) for x in predictions]
+        prediction_thresholds = [
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            0.95,
+            0.98,
+            0.9999,
+        ]
+
+        full_preds = []
+        for p in predictions:
+            curr_preds = []
+            for thresh in prediction_thresholds:
+                curr_preds.append(1 if float(p["logit"]) > thresh else 0)
+            full_preds.append([*curr_preds, p["ground_truth"]])
+
+        columns = [*prediction_thresholds, "ground_truth"]
+        data = full_preds
+
+        df = pd.DataFrame(data, columns=columns)
+
+        ground_truth = [int(k) for k in df["ground_truth"].tolist()]
+        new_predictions = []
+
+        for p_t in prediction_thresholds:
+            new_predictions.append(df[p_t].tolist())
+
+        df_data = []
+        string_ground_truth = "".join([str(s) for s in ground_truth])
+
+        # k values
+        evaluation_windows = [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+        ]  # [2, 5, 7, 10, 14]
+        for evaluation_window in evaluation_windows:
+            for thresh, pred_set in zip(prediction_thresholds, new_predictions):
+                string_pred_set = "".join([str(s) for s in pred_set])
+
+                pk_result = pk(string_pred_set,
+                               string_ground_truth, evaluation_window)
+                window_diff_result = windowdiff(
+                    string_pred_set, string_ground_truth, evaluation_window
+                )
+
+                TP, FP, TN, FN = perf_measure(ground_truth, pred_set)
+                precision = get_precision(TP, FP, TN, FN)
+                recall = get_recall(TP, FP, TN, FN)
+
+                # create the dataframe
+                df_data.append(
+                    [
+                        evaluation_window,
+                        thresh,
+                        TP, FP, TN, FN,
+                        precision,
+                        recall,
+                        pk_result,
+                        window_diff_result,
+                    ]
+                )
+
+                # print(thresh, (TP, FP, TN, FN), precision, recall)
+
+        df_evaluation_set = pd.DataFrame(
+            df_data, columns=["K", "Threshold", "TP", "FP", "TN",
+                              "FN", "precision", "recall", "Pk", "WindowDiff"]
+        )
+        evaluation_file = "{}/eval.csv".format(predictions_directory)
+
+        try:
+            # if not os.path.exists(os.path.dirname(evaluation_file)):
+            #     os.makedirs(os.path.dirname(evaluation_file))
+            with open(evaluation_file, 'w') as csvfile:
+                df_evaluation_set.to_csv(evaluation_file, index=False)
+        except IOError:
+            print("I/O error")
 
     def predict(self, model, dataset_type: str, random_hash: str):
         print("Conducting predictions - initializing testing dataset...")
@@ -143,16 +284,31 @@ class SimpleExperiment:
                 writer.writeheader()
                 for data in predictions_log:
                     writer.writerow(data)
+            print("predictions complete...")
         except IOError:
             print("I/O error")
 
-    def run(self, cast_predictions: bool = True):
+        self.evaluate(random_hash)
+
+    def run(self, cast_predictions: bool = True, start: int = None, end: int = None):
+        """Run experiments
+
+        Args:
+            cast_predictions (bool, optional): Determines whether to run predictions after training. Defaults to True.
+            start (int, optional): Overrides experiments start and end (e.g., run the first two experiments only - 0, 2). Defaults to None.
+            end (int, optional): Overrides experiments start and end (e.g., run the first two experiments only - 0, 2). Defaults to None.
+        """
         experiments_config = get_experiments_json(self.experiment_string)
 
         assert len(
             experiments_config) > 0, "There should be at least one experiment"
 
-        for experiment in experiments_config:
+        if start is None:
+            start = 0
+        if end is None:
+            end = len(experiments_config)
+
+        for experiment in experiments_config[start:end]:
             dataset_type = experiment['dataset_type']
             final_dropout = experiment['final_dropout']
             dense_neurons = experiment['dense_neurons']

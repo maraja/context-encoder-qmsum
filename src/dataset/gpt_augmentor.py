@@ -48,8 +48,9 @@ class Augmentor:
                 input_ids,
                 do_sample=True,
                 max_length=max_seq_word_length,
-                top_k=40,
+                top_k=10,
                 temperature=0.7,
+                no_repeat_ngram_size=2,
                 num_return_sequences=num_return_sequences,
             )
 

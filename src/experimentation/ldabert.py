@@ -87,7 +87,7 @@ class SimpleExperiment:
         self.predictions_lda_gamma = predictions_lda_gamma
 
     def evaluate(self, random_hash):
-        print("running evaluations")
+        print("running evaluations...")
         predictions_directory = "{}/predictions/{}".format(
             config.root_path, random_hash)
         predictions_path = "{}/predictions.csv".format(predictions_directory)

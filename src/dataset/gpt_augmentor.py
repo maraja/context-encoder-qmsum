@@ -19,7 +19,7 @@ class Augmentor:
         sentences: List,
         fast=False,
         num_return_sequences=3,
-        max_seq_word_length=50,
+        max_seq_word_length=200,
         verbose=False,
     ):
         """creates segments augmented based on gpt2
@@ -41,7 +41,7 @@ class Augmentor:
             input_ids = tokenizer.encode(sentence, return_tensors="tf")
 
             # set seed to reproduce results. Feel free to change the seed though to get different results
-            tf.random.set_seed(0)
+            tf.random.set_seed(32)
 
             # set top_k = 50 and set top_p = 0.95 and num_return_sequences = 3
             sample_outputs = cls.gpt_model.generate(

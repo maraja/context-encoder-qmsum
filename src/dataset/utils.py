@@ -25,3 +25,19 @@ def save_results(params: Params, accuracy: List, val_accuracy: List, loss: List,
 # destructure the segments as they are currently in lists
 def flatten(arr):
     return [item for sublist in arr for item in sublist]
+
+
+def truncate_by_char(text, num_chars):
+    return text[:num_chars]
+
+
+def truncate_by_sentence(text, num_sentences):
+    sentences = text.split(".")
+    # add a trailing period only if truncation happens before the end.
+    return ".".join(sentences[:num_sentences]) + (
+        "." if num_sentences < len(sentences) else ""
+    )
+
+
+def avg_segment_length_by_char(segment):
+    return sum(map(len, segment)) // float(len(segment))

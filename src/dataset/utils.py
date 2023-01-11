@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+from nltk.tokenize import word_tokenize
 
 
 @dataclass
@@ -30,6 +31,9 @@ def flatten(arr):
 def truncate_by_char(text, num_chars):
     return text[:num_chars]
 
+def truncate_by_token(text, num_tokens):
+    return " ".join(word_tokenize(text)[:num_tokens])
+
 
 def truncate_by_sentence(text, num_sentences):
     sentences = text.split(".")
@@ -39,5 +43,9 @@ def truncate_by_sentence(text, num_sentences):
     )
 
 
-def avg_segment_length_by_char(segment):
-    return sum(map(len, segment)) // float(len(segment))
+def avg_segment_length_by_char(segment, floor=True):
+    return sum(map(len, segment)) // float(len(segment)) if floor == True else sum(map(len, segment)) / float(len(segment))
+
+
+def avg_segment_length_by_token(segment, floor=True):
+    return sum([len(word_tokenize(t)) for t in segment]) // float(len(segment)) if floor == True else sum([len(word_tokenize(t)) for t in segment]) / float(len(segment))

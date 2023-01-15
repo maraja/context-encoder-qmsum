@@ -166,6 +166,7 @@ class Augmentor:
 
         augmented_segments = []
 
+        print("beginning GTA 1 augmentation.")
         for segment in segments:
             augmented_segment = []
             for i in range(0, avg_segment_length):
@@ -193,7 +194,7 @@ class Augmentor:
                 )
 
                 augmented_segment.append(augmented_sentence)
-                print("augmented_segment", augmented_segment)
+                print(".", end="")
 
             augmented_segments.append(augmented_segment)
 
@@ -227,6 +228,7 @@ class Augmentor:
         max_sent_tokens = 64
         augmented_segments = []
 
+        print("beginning GTA 2 augmentation.")
         for segment in segments:
             augmented_segment = []
             for sentence in segment:
@@ -248,6 +250,7 @@ class Augmentor:
                 )
 
                 augmented_segment.append(augmented_sentence)
+                print(".", end="")
 
             augmented_segments.append(augmented_segment)
 

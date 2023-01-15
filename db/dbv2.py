@@ -286,6 +286,82 @@ class AugmentedTable(DB):
         return rows
 
 
+class GTA1Table(DB):
+    def __init__(self, dataset_type, table_type=""):
+        super().__init__(dataset_type, 'gta1')
+
+    def migrate_table(self):
+
+        sql_create_gta1_table = f"""CREATE TABLE IF NOT EXISTS {self.dataset_type}_gta1 (
+                                            id integer PRIMARY KEY,
+                                            augmented_sentence text NOT NULL,
+                                            target integer NOT NULL,
+                                            {self.dataset_type}_id integer NOT NULL,
+                                            sequence integer NOT NULL,
+                                            FOREIGN KEY ({self.dataset_type}_id) REFERENCES {self.dataset_type} (id)
+                                        );"""
+
+        # create tables
+        if self.conn is not None:
+            self.create_table(sql_create_gta1_table)
+
+    def create_augmented_sentence(self, augmented_sentence):
+        sql = f""" INSERT INTO {self.dataset_type}_gta1(augmented_sentence,target,sequence,{self.dataset_type}_id)
+                VALUES(?,?,?,?) """
+        cur = self.conn.cursor()
+        cur.execute(sql, augmented_sentence)
+        self.conn.commit()
+        return cur.lastrowid
+
+    def get_augmented_sentences(self, real_sentence_id: int):
+        sql = f"""SELECT * FROM {self.dataset_type}_gta1 WHERE {self.dataset_type}_id=? ORDER BY """
+
+        cur = self.conn.cursor()
+        cur.execute(sql, (1, real_sentence_id))
+
+        rows = cur.fetchall()
+
+        return rows
+
+
+class GTA2Table(DB):
+    def __init__(self, dataset_type, table_type=""):
+        super().__init__(dataset_type, 'gta2')
+
+    def migrate_table(self):
+
+        sql_create_gta2_table = f"""CREATE TABLE IF NOT EXISTS {self.dataset_type}_gta2 (
+                                            id integer PRIMARY KEY,
+                                            augmented_sentence text NOT NULL,
+                                            target integer NOT NULL,
+                                            {self.dataset_type}_id integer NOT NULL,
+                                            sequence integer NOT NULL,
+                                            FOREIGN KEY ({self.dataset_type}_id) REFERENCES {self.dataset_type} (id)
+                                        );"""
+
+        # create tables
+        if self.conn is not None:
+            self.create_table(sql_create_gta2_table)
+
+    def create_augmented_sentence(self, augmented_sentence):
+        sql = f""" INSERT INTO {self.dataset_type}_gta2(augmented_sentence,target,sequence,{self.dataset_type}_id)
+                VALUES(?,?,?,?) """
+        cur = self.conn.cursor()
+        cur.execute(sql, augmented_sentence)
+        self.conn.commit()
+        return cur.lastrowid
+
+    def get_augmented_sentences(self, real_sentence_id: int):
+        sql = f"""SELECT * FROM {self.dataset_type}_gta2 WHERE {self.dataset_type}_id=? ORDER BY """
+
+        cur = self.conn.cursor()
+        cur.execute(sql, (1, real_sentence_id))
+
+        rows = cur.fetchall()
+
+        return rows
+
+
 class TrainTestTable(DB):
     def __init__(self, dataset_type):
         super().__init__(dataset_type, 'train_test')

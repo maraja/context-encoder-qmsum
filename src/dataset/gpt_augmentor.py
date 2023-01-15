@@ -167,9 +167,9 @@ class Augmentor:
         augmented_segments = []
 
         print("beginning GTA 1 augmentation.")
-        for segment in segments:
+        for i, segment in enumerate(segments):
             augmented_segment = []
-            for i in range(0, avg_segment_length):
+            for j in range(0, avg_segment_length):
                 next_sentence = (
                     segment[0] if len(
                         augmented_segment) == 0 else augmented_segment[-1]
@@ -196,6 +196,7 @@ class Augmentor:
                 augmented_segment.append(augmented_sentence)
                 print(".", end="")
 
+            print(f"completed {i+1}/{len(segments)} segments")
             augmented_segments.append(augmented_segment)
 
         return augmented_segments
@@ -229,7 +230,7 @@ class Augmentor:
         augmented_segments = []
 
         print("beginning GTA 2 augmentation.")
-        for segment in segments:
+        for i, segment in enumerate(segments):
             augmented_segment = []
             for sentence in segment:
                 sentence = truncate_by_token(sentence, max_sent_tokens)
@@ -252,6 +253,7 @@ class Augmentor:
                 augmented_segment.append(augmented_sentence)
                 print(".", end="")
 
+            print(f"completed {i+1}/{len(segments)} segments")
             augmented_segments.append(augmented_segment)
 
         return augmented_segments

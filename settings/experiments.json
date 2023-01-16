@@ -22,18 +22,6 @@
     "augment_pct": [1],
     "epochs": [1000]
   },
-  "ldabert2_simple_finetune_test": {
-    "bert_type": ["ldabert"],
-    "dataset_type": ["clinical", "wiki", "fiction"],
-    "final_dropout": [0.5],
-    "dense_neurons": [128],
-    "max_sentence_length": [128],
-    "gamma": [15],
-    "pct_data": [1],
-    "augment_pct": [1],
-    "bert_trainable": [true],
-    "epochs": [50]
-  },
   "ldabert2_simple_test": {
     "bert_type": ["ldabert"],
     "dataset_type": ["committee", "product", "academic"],
@@ -45,6 +33,18 @@
     "augment_pct": [1],
     "bert_trainable": [false],
     "epochs": [150]
+  },
+  "ldabert2_simple_finetune_test": {
+    "bert_type": ["ldabert"],
+    "dataset_type": ["committee", "product", "academic"],
+    "final_dropout": [0.5],
+    "dense_neurons": [128],
+    "max_sentence_length": [128],
+    "gamma": [15],
+    "pct_data": [1],
+    "augment_pct": [1],
+    "bert_trainable": [false],
+    "epochs": [50]
   },
   "ldabert2_complex_test": {
     "bert_type": ["ldabert"],

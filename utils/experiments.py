@@ -2,16 +2,17 @@ import toml
 import json
 import itertools
 from matplotlib import pyplot as plt
+import config
 
 
 def get_experiments(key):
-    return dict(toml.load("../settings/experiments.toml")).get(key, [])
+    return dict(toml.load(config.root_path + "/settings/experiments.toml")).get(key, [])
 
 
 def get_experiments_json(key):
     # Opening JSON file
     f = open(
-        "../settings/experiments.json",
+        config.root_path + "/settings/experiments.json",
     )
 
     data = json.load(f)
@@ -29,7 +30,7 @@ def get_experiments_json(key):
 
 
 def save_results(experiment):
-    with open("../results/experiment_results.json", "r+") as file:
+    with open(config.root_path + "/results/experiment_results.json", "r+") as file:
         # First we load existing data into a dict.
         file_data = json.load(file)
 
@@ -53,8 +54,9 @@ def save_results(experiment):
 
 def print_break(text: str):
     print(
-        "==============================================================================")
+        "=============================================================================="
+    )
+    print(f"=========================== {text} ==============================")
     print(
-        f"=========================== {text} ==============================")
-    print(
-        "==============================================================================")
+        "=============================================================================="
+    )

@@ -144,11 +144,13 @@ class Augmentor:
         Note: By default, GPT is autoregressive, so instead of having to re-run GPT on every sentence that's generated, just run it once and multiply the output_tokens by n to get the desired sentences. Afterward, the post-processing will need to chop the initial sentence off and break the complete output sentence into its relative sentences.
     """
     @classmethod
-    def gta1(cls, segments: List[List[str]], max_sent_tokens: int = 64) -> List[List[str]]:
+    def gta1(cls, segments: List[List[str]], min_sent_tokens: int = 64, max_sent_tokens: int = 64) -> List[List[str]]:
         """
         Args:
             segments (List[List[str]]): List of segments
             max_sent_tokens (int, optional): Max number of words your real sentences will have before feeding into GPT2. Defaults to 64.
+            min_sent_tokens (int, optional): Min number of words your real sentences will have before feeding into GPT2. Defaults to 64.
+                - Note: the min sent tokens is to avoid sentences like "Um.", "Okay, that's good" for example where there's no context.
 
         Returns:
             List[List[str]]: returns a list of segments with the same shape as `segments`
@@ -169,9 +171,14 @@ class Augmentor:
         print("beginning GTA 1 augmentation.")
         for i, segment in enumerate(segments):
             augmented_segment = []
+            next_sentence = segment[0]
+            for sentence in segment:
+                if len(word_tokenize(sentence)) >= min_sent_tokens:
+                    next_sentence = sentence
+                    break
             for j in range(0, avg_segment_length):
                 next_sentence = (
-                    segment[0] if len(
+                    next_sentence if len(
                         augmented_segment) == 0 else augmented_segment[-1]
                 )
                 next_sentence = truncate_by_token(
@@ -212,11 +219,13 @@ class Augmentor:
         - Possible disjointedness with augmented sentences since they may vary quite a bit from the immediate sentence previously due to relying on an intermediary in-between sentence to generate.
     """
     @classmethod
-    def gta2(cls, segments: List[List[str]], max_sent_tokens: int = 64) -> List[List[str]]:
+    def gta2(cls, segments: List[List[str]], min_sent_tokens: int = 64, max_sent_tokens: int = 64) -> List[List[str]]:
         """
         Args:
             segments (List[List[str]]): real segments to feed into GPT2
             max_sent_tokens (int, optional): Max number of words your real sentences will have before feeding into GPT2. Defaults to 64.
+            min_sent_tokens (int, optional): Min number of words your real sentences will have before feeding into GPT2. Defaults to 64.
+                - Note: the min sent tokens is to avoid sentences like "Um.", "Okay, that's good" for example where there's no context.
 
         Returns:
             List[List[str]]: returns a list of segments with the same shape as `segments`
@@ -232,6 +241,11 @@ class Augmentor:
         print("beginning GTA 2 augmentation.")
         for i, segment in enumerate(segments):
             augmented_segment = []
+            next_sentence = segment[0]
+            for sentence in segment:
+                if len(word_tokenize(sentence)) >= min_sent_tokens:
+                    next_sentence = sentence
+                    break
             for sentence in segment:
                 sentence = truncate_by_token(sentence, max_sent_tokens)
                 sentence_length = len(sentence)

@@ -372,7 +372,6 @@ class TrainTestTable(DB):
         self.dataset_type = dataset_type
 
     def migrate_table(self):
-        print(self.table_name)
         sql_create_train_test_table = f""" CREATE TABLE IF NOT EXISTS {self.table_name} (
                                 id integer PRIMARY KEY,
                                 segment_id integer NOT NULL,

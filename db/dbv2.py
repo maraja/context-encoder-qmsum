@@ -25,6 +25,10 @@ class DB:
             self.table_name += "_gpt_augmented"
         elif table_type == "train_test":
             self.table_name += "_train_test"
+        elif table_type == "gta1":
+            self.table_name += "_gta1"
+        elif table_type == "gta2":
+            self.table_name += "_gta2"
 
         self.db_file = os.path.join(dname, f"{dataset_type}.db")
 
@@ -235,7 +239,7 @@ class DB:
 
 class Table(DB):
     def migrate_table(self):
-        sql_create_table = f""" CREATE TABLE IF NOT EXISTS {self.dataset_type} (
+        sql_create_table = f""" CREATE TABLE IF NOT EXISTS {self.table_name} (
                                 id integer PRIMARY KEY,
                                 sentence text NOT NULL,
                                 target integer NOT NULL,
@@ -254,7 +258,7 @@ class AugmentedTable(DB):
 
     def migrate_table(self):
 
-        sql_create_augmented_table = f"""CREATE TABLE IF NOT EXISTS {self.dataset_type}_augmented (
+        sql_create_augmented_table = f"""CREATE TABLE IF NOT EXISTS {self.table_name} (
                                             id integer PRIMARY KEY,
                                             augmented_sentence text NOT NULL,
                                             target integer NOT NULL,
@@ -268,7 +272,7 @@ class AugmentedTable(DB):
             self.create_table(sql_create_augmented_table)
 
     def create_augmented_sentence(self, augmented_sentence):
-        sql = f""" INSERT INTO {self.dataset_type}_augmented(augmented_sentence,target,sequence,{self.dataset_type}_id)
+        sql = f""" INSERT INTO {self.table_name}(augmented_sentence,target,sequence,{self.dataset_type}_id)
                 VALUES(?,?,?,?) """
         cur = self.conn.cursor()
         cur.execute(sql, augmented_sentence)
@@ -276,7 +280,7 @@ class AugmentedTable(DB):
         return cur.lastrowid
 
     def get_augmented_sentences(self, real_sentence_id: int):
-        sql = f"""SELECT * FROM {self.dataset_type}_augmented WHERE {self.dataset_type}_id=? ORDER BY """
+        sql = f"""SELECT * FROM {self.table_name} WHERE {self.dataset_type}_id=? ORDER BY """
 
         cur = self.conn.cursor()
         cur.execute(sql, (1, real_sentence_id))
@@ -292,7 +296,7 @@ class GTA1Table(DB):
 
     def migrate_table(self):
 
-        sql_create_gta1_table = f"""CREATE TABLE IF NOT EXISTS {self.dataset_type}_gta1 (
+        sql_create_gta1_table = f"""CREATE TABLE IF NOT EXISTS {self.table_name} (
                                             id integer PRIMARY KEY,
                                             augmented_sentence text NOT NULL,
                                             target integer NOT NULL,
@@ -306,7 +310,7 @@ class GTA1Table(DB):
             self.create_table(sql_create_gta1_table)
 
     def create_augmented_sentence(self, augmented_sentence):
-        sql = f""" INSERT INTO {self.dataset_type}_gta1(augmented_sentence,target,sequence,{self.dataset_type}_id)
+        sql = f""" INSERT INTO {self.table_name}(augmented_sentence,target,sequence,{self.dataset_type}_id)
                 VALUES(?,?,?,?) """
         cur = self.conn.cursor()
         cur.execute(sql, augmented_sentence)
@@ -314,7 +318,7 @@ class GTA1Table(DB):
         return cur.lastrowid
 
     def get_augmented_sentences(self, real_sentence_id: int):
-        sql = f"""SELECT * FROM {self.dataset_type}_gta1 WHERE {self.dataset_type}_id=? ORDER BY """
+        sql = f"""SELECT * FROM {self.table_name} WHERE {self.dataset_type}_id=? ORDER BY """
 
         cur = self.conn.cursor()
         cur.execute(sql, (1, real_sentence_id))
@@ -330,7 +334,7 @@ class GTA2Table(DB):
 
     def migrate_table(self):
 
-        sql_create_gta2_table = f"""CREATE TABLE IF NOT EXISTS {self.dataset_type}_gta2 (
+        sql_create_gta2_table = f"""CREATE TABLE IF NOT EXISTS {self.table_name} (
                                             id integer PRIMARY KEY,
                                             augmented_sentence text NOT NULL,
                                             target integer NOT NULL,
@@ -344,7 +348,7 @@ class GTA2Table(DB):
             self.create_table(sql_create_gta2_table)
 
     def create_augmented_sentence(self, augmented_sentence):
-        sql = f""" INSERT INTO {self.dataset_type}_gta2(augmented_sentence,target,sequence,{self.dataset_type}_id)
+        sql = f""" INSERT INTO {self.table_name}(augmented_sentence,target,sequence,{self.dataset_type}_id)
                 VALUES(?,?,?,?) """
         cur = self.conn.cursor()
         cur.execute(sql, augmented_sentence)
@@ -352,7 +356,7 @@ class GTA2Table(DB):
         return cur.lastrowid
 
     def get_augmented_sentences(self, real_sentence_id: int):
-        sql = f"""SELECT * FROM {self.dataset_type}_gta2 WHERE {self.dataset_type}_id=? ORDER BY """
+        sql = f"""SELECT * FROM {self.table_name} WHERE {self.dataset_type}_id=? ORDER BY """
 
         cur = self.conn.cursor()
         cur.execute(sql, (1, real_sentence_id))
@@ -368,7 +372,7 @@ class TrainTestTable(DB):
         self.dataset_type = dataset_type
 
     def migrate_table(self):
-        sql_create_train_test_table = f""" CREATE TABLE IF NOT EXISTS {self.dataset_type}_train_test (
+        sql_create_train_test_table = f""" CREATE TABLE IF NOT EXISTS {self.table_name} (
                                 id integer PRIMARY KEY,
                                 segment_id integer NOT NULL,
                                 type text NOT NULL,
